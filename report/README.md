@@ -58,11 +58,11 @@ TODO : URL
 
 **Deliverables**:
 
-1. *Take a screenshot of the stats page of HAProxy at <http://192.168.42.42:1936>. You should see your backend nodes. It should be really similar to the screenshot of the previous task.*  
+1. **Take a screenshot of the stats page of HAProxy at <http://192.168.42.42:1936>. You should see your backend nodes. It should be really similar to the screenshot of the previous task.**  
 Indeed, the HAProxy's stats page is similar to the one seen in Task 0 : 
 ![Architecture](../logs/task1/1.1.PNG)
 
-2. *Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.*  
+2. **Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.**  
 TODO
    
 ## <a name="task-2"></a>Task 2: Add a tool to manage membership in the web server cluster
@@ -70,45 +70,45 @@ TODO
 
 **Deliverables**:
 
-1. *Provide the docker log output for each of the containers: `ha`, `s1` and `s2`.*  
+1. **Provide the docker log output for each of the containers: `ha`, `s1` and `s2`.**  
    * ha log : [logs/task2/ha.log](../logs/task2/ha.log)
    * s1 log : [logs/task2/s1.log](../logs/task2/s1.log)
    * s2 log : [logs/task2/s2.log](../logs/task2/s2.log)
 
-2. *Give the answer to the question about the existing problem with the current solution.*  
+2. **Give the answer to the question about the existing problem with the current solution.**  
 TODO
 
-3. *Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.*  
+3. **Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.**  
    
 ## <a name="task-3"></a>Task 3: React to membership changes
 
 **Deliverables**:
 
-1. *Provide the docker log output for each of the containers:  `ha`, `s1` and `s2`.*  
+1. **Provide the docker log output for each of the containers:  `ha`, `s1` and `s2`.**  
 * We first start `ha` (log : [logs/task3/ha1.log](../logs/task3/ha1.log))
 * Then, we start one of the nodes (s1 in our case) (log : [logs/task3/s11.log](../logs/task3/s1.log))
 * Giving us to following log for `ha`: [logs/task3/ha12.log](../logs/task3/ha12.log)
 
-2. *Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container.*  
+2. **Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container.**  
 * serf log : [logs/task3/serf.log](../logs/task3/serf.log)
 
 ## <a name="task-4"></a>Task 4: Use a template engine to easily generate configuration files
 
 **Deliverables**:
 
-1. *You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that?*  
+1. **You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that?**  
 TODO
 To mitigate that, we could
 
- *Tell us about the pros and cons to merge as much as possible of the command.*  
+ **Tell us about the pros and cons to merge as much as possible of the command.**  
 * Pros : 
 * Cons : 
 
  *There are also some articles about techniques to reduce the image size. Try to find them. They are talking about `squashing` or `flattening` images.*  
 
-2. *Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.*  
+2. **Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.**  
 
-3. *Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected. In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.*  
+3. **Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected. In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.**  
    * haproxy.cfg after starting ha : [logs/task4/haproxy_1.log](../logs/task4/haproxy_1.log)
    * haproxy.cfg after starting s1 : [logs/task4/haproxy_2.log](../logs/task4/haproxy_2.log)
    * haproxy.cfg after starting s2 : [logs/task4/haproxy_3.log](../logs/task4/haproxy_3.log)
@@ -117,14 +117,14 @@ To mitigate that, we could
    * Output of `docker inspect s1` : [logs/task4/inspect_s1.log](../logs/task4/inspect_s1.log)
    * Output of `docker inspect ha` : [logs/task4/inspect_s2.log](../logs/task4/inspect_s2.log)
     
-4. *Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?*  
+4. **Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?**  
 TODO
    
 ## <a name="task-5"></a>Task 5: Generate a new load balancer configuration when membership changes
 
 **Deliverables**:
 
-1. *Provide the file `/usr/local/etc/haproxy/haproxy.cfg` generated in the `ha` container after each step. Three files are expected. In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.*  
+1. **Provide the file `/usr/local/etc/haproxy/haproxy.cfg` generated in the `ha` container after each step. Three files are expected. In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.**  
    * haproxy.cfg after starting ha : [logs/task5/haproxy_1.cfg](../logs/task5/haproxy_1.cfg)
    * haproxy.cfg after starting s1 : [logs/task5/haproxy_2.cfg](../logs/task5/haproxy_2.cfg)
    * haproxy.cfg after starting s2 : [logs/task5/haproxy_3.cfg](../logs/task5/haproxy_3.cfg)
@@ -133,10 +133,10 @@ TODO
    * Output of `docker inspect s1`: [logs/task5/inspect_s1.log](../logs/task5/inspect_s1.log)
    * Output of `docker inspect ha`: [logs/task5/inspect_s2.log](../logs/task5/inspect_s2.log)
   
-2. *Provide the list of files from the `/nodes` folder inside the `ha` container. One file expected with the command output.*  
+2. **Provide the list of files from the `/nodes` folder inside the `ha` container. One file expected with the command output.**  
    * List of files from `/nodes`: [logs/task5/ls_nodes.log](../logs/task5/ls_nodes.log)
 
-3. *Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected. In addition, provide a log file containing the output of the    `docker ps` console. One file expected.*  
+3. **Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected. In addition, provide a log file containing the output of the `docker ps` console. One file expected.**  
    * haproxy.cfg after stopping s1 : [logs/task5/haproxy_4.cfg](../logs/task5/haproxy_2.cfg)
    * List of files from `/nodes`: [logs/task5/ls_nodes2.log](../logs/task5/ls_nodes2.log)
    * Output of `docker ps`: [logs/task5/docker_ps2.log](../logs/task5/docker_ps2.log)
@@ -145,7 +145,7 @@ TODO
 
 **Deliverables**:
 
-1. *Take a screenshots of the HAProxy stat page showing more than 2 web applications running. Additional screenshots are welcome to see a sequence of experimentations like shutting down a node and starting more nodes. Also provide the output of `docker ps` in a log file. At least one file is expected. You can provide one output per step of your experimentation according to your screenshots.*  
+1. **Take a screenshots of the HAProxy stat page showing more than 2 web applications running. Additional screenshots are welcome to see a sequence of experimentations like shutting down a node and starting more nodes. Also provide the output of `docker ps` in a log file. At least one file is expected. You can provide one output per step of your experimentation according to your screenshots.**  
 * We first ran `ha` and `s1`. As expected, HAProxy's stat page shows only one application running : 
 ![Architecture](../logs/task6/6.1_port.PNG)
 `docker ps` output : [logs/task6/6.1_ps.log](../logs/task6/6.1_ps.log)
@@ -164,7 +164,7 @@ and after a few seconds deletes it :
 ![Architecture](../logs/task6/6.4_port2.PNG)
 `docker ps` output : [logs/task6/6.4ps.log](../logs/task6/6.4_ps.log)
    
-2. *Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.*
+2. **Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.**
    
 ## <a name="difficulties"></a>Difficulties
 
