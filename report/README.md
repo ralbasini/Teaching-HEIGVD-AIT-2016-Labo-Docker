@@ -30,30 +30,38 @@ In order to do so, we will perform several tasks which details are explained in 
 **Issues :**
 
 1. **[M1] Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?**  
+
 TODO  
 
 2. **[M2] Describe what you need to do to add new webapp container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.**  
+
 TODO  
 
 3. **[M3] Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.**  
+
 TODO  
 
 4. **[M4] You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic fashion?**  
+
 TODO  
 
-5. **[M5] In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks. For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task. Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?** 
+5. **[M5] In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks. For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task. Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?**  
+
 TODO  
 
 6. **[M6] In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the run.sh script, we see two calls to sed which will replace two lines in the haproxy.cfg configuration file just before we start haproxy. You clearly see that the configuration file has two lines and the script will replace these two lines. What happens if we add more web server nodes? Do you think it is really dynamic? It's far away from being a dynamic configuration. Can you propose a solution to solve this?**  
+
 TODO 
 
 **Deliverables**:
 
 1. **Take a screenshot of the stats page of HAProxy at <http://192.168.42.42:1936>. You should see your backend nodes.**   
+
 As expected, we can see both of our backend nodes running : 
 ![Architecture](../logs/task0/task0_1.PNG)
 
 2. **Give the URL of your repository URL in the lab report.**  
+
 TODO
 
 ## <a name="task-1"></a>Task 1: Add a process supervisor to run several processes
@@ -61,10 +69,12 @@ TODO
 **Deliverables**:
 
 1. **Take a screenshot of the stats page of HAProxy at <http://192.168.42.42:1936>. You should see your backend nodes. It should be really similar to the screenshot of the previous task.**  
+
 Indeed, the HAProxy's stats page is similar to the one seen in Task 0 : 
 ![Architecture](../logs/task1/1.1.PNG)
 
 2. **Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.**  
+
 TODO
    
 ## <a name="task-2"></a>Task 2: Add a tool to manage membership in the web server cluster
@@ -78,10 +88,13 @@ TODO
    * s2 log : [logs/task2/s2.log](../logs/task2/s2.log)
 
 2. **Give the answer to the question about the existing problem with the current solution.**  
+
 TODO
 
 3. **Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.**  
-   
+
+TODO    
+
 ## <a name="task-3"></a>Task 3: React to membership changes
 
 **Deliverables**:
@@ -99,16 +112,21 @@ TODO
 **Deliverables**:
 
 1. **You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that?**  
-TODO
-To mitigate that, we could
+
+TODO : To mitigate that, we could
 
  **Tell us about the pros and cons to merge as much as possible of the command.**  
+
  * Pros : 
  * Cons : 
 
- *There are also some articles about techniques to reduce the image size. Try to find them. They are talking about `squashing` or `flattening` images.*  
+ **There are also some articles about techniques to reduce the image size. Try to find them. They are talking about `squashing` or `flattening` images.**
+
+ TODO 
 
 2. **Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.**  
+
+TODO 
 
 3. **Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected. In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.**  
    * haproxy.cfg after starting ha : [logs/task4/haproxy_1.log](../logs/task4/haproxy_1.log)
@@ -120,6 +138,7 @@ To mitigate that, we could
    * Output of `docker inspect ha` : [logs/task4/inspect_s2.log](../logs/task4/inspect_s2.log)
     
 4. **Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?**  
+
 TODO
    
 ## <a name="task-5"></a>Task 5: Generate a new load balancer configuration when membership changes
