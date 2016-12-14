@@ -179,23 +179,23 @@ On a du les taper manuellement, c'est pas automatisé.
 **Deliverables**:
 
 1. **Take a screenshots of the HAProxy stat page showing more than 2 web applications running. Additional screenshots are welcome to see a sequence of experimentations like shutting down a node and starting more nodes. Also provide the output of `docker ps` in a log file. At least one file is expected. You can provide one output per step of your experimentation according to your screenshots.**  
-* We first ran `ha` and `s1`. As expected, HAProxy's stat page shows only one application running : 
-![Architecture](../logs/task6/6.1_port.PNG)
-`docker ps` output : [logs/task6/6.1_ps.log](../logs/task6/6.1_ps.log)
+ * We first ran `ha` and `s1`. As expected, HAProxy's stat page shows only one application running : 
+ ![Architecture](../logs/task6/6.1_port.PNG)
+ `docker ps` output : [logs/task6/6.1_ps.log](../logs/task6/6.1_ps.log)
 
-* We then ran `s2`. As expected, HAProxy's stat page now shows both applications running : 
-![Architecture](../logs/task6/6.2_port.PNG)
-`docker ps` output : [logs/task6/6.2_ps.log](../logs/task6/6.2_ps.log)
+ * We then ran `s2`. As expected, HAProxy's stat page now shows both applications running : 
+ ![Architecture](../logs/task6/6.2_port.PNG)
+ `docker ps` output : [logs/task6/6.2_ps.log](../logs/task6/6.2_ps.log)
 
-* We now ran a third node `s3`. HAProxy's stat page now shows the 3 applications running : 
-![Architecture](../logs/task6/6.3_port.PNG)
-`docker ps` output : [logs/task6/6.3_ps.log](../logs/task6/6.3_ps.log)
+ * We now ran a third node `s3`. HAProxy's stat page now shows the 3 applications running : 
+ ![Architecture](../logs/task6/6.3_port.PNG)
+ `docker ps` output : [logs/task6/6.3_ps.log](../logs/task6/6.3_ps.log)
 
-* Finally, we stopped `s1`. HAProxy's stat page then shows s1 as stopped : 
-![Architecture](../logs/task6/6.4_port.PNG)
-and after a few seconds deletes it : 
-![Architecture](../logs/task6/6.4_port2.PNG)
-`docker ps` output : [logs/task6/6.4ps.log](../logs/task6/6.4_ps.log)
+ * Finally, we stopped `s1`. HAProxy's stat page then shows s1 as stopped : 
+ ![Architecture](../logs/task6/6.4_port.PNG)
+ and after a few seconds deletes it : 
+ ![Architecture](../logs/task6/6.4_port2.PNG)
+ `docker ps` output : [logs/task6/6.4ps.log](../logs/task6/6.4_ps.log)
    
 2. **Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.**
    
