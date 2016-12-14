@@ -34,7 +34,7 @@ In order to do so, we will perform several tasks which details are explained in 
   
 2. **[M2] Describe what you need to do to add new webapp container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.**  
  1) We edit `haproxy.cfg` to add the node  
- `server s3 <s3>:3000 check`  
+ `server s3 <s3>:3000 check`  <br />
  2) We edit the `run.sh` script.  
  `sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg`  
  3) We rebuild `ha`  
@@ -80,8 +80,7 @@ In order to do so, we will perform several tasks which details are explained in 
 
 2. **Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.**  
  As explained in the question M5, we can't have more that one running process per container. Installing a process supervisor will allow us to bypass this limitation. In our case, `ha` and the `serf` agent will run on the same docker image. To do so, we will use `s6`. It is a small init system that will coordinate the boot process and will allow to run multiple processes inside one container.  
- To implement the process supervisor, we edited our `Dockerfile` to download and install `S6`. Then, we configured `S6` to be the main process of our containers by editing the `ENTRYPOINT` of `ha` and `webapp`'s respective `Dockerfile`.  
- We didn't encounter much difficulties, the instructions were very well documented. 
+
    
 ## <a name="task-2"></a>Task 2: Add a tool to manage membership in the web server cluster
 
@@ -93,13 +92,14 @@ In order to do so, we will perform several tasks which details are explained in 
    * s2 log : [logs/task2/s2.log](../logs/task2/s2.log)
 
 2. **Give the answer to the question about the existing problem with the current solution.**  
-
+ As we explored during the manipulations, the problem is that we have to start `ha` first for the nodes to be linked to it. 
 Problème est qu'on doit starter ha d'abord pour que les nodes puissent y être reliés. 
 Une solution peut être d'utiliser l'option `-retry-join` et de donner l'adresse de ha pour que l'agent puisse joindre ha. Voir le [lien](https://www.consul.io/docs/agent/options.html) pour plus de détails sur ta soeur
 
 3. **Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.**  
-
-TODO    
+ To goal of `Serf` is to let each node to know every other node existing at any given time. Each container has a `serf agent` running, and the different agents will later communicate to exchange information.  
+ The protocol used is [GOSSIP](https://www.serf.io/docs/internals/gossip.html). It is based on [SWIM](https://www.cs.cornell.edu/~asdas/research/dsn02-swim.pdf) with improvements on propagation speed and convergence rate. The first agent creates a new cluster, and additional nodes will join it. When joining, the new node will do a full state sync with the existing member over TCP, and begins "gossiping". This communication is run over UDP, and its purpose is to tell the other nodes its existence. When a node fails to send its periodic ACK messages, the other nodes will be asked to try to reach the defaillant node. If it is still not responding, it will be marked as suspicious. If the suspicious node couldn't dispute the suspicion during a certain amount of time, it is finally considered dead.
+    
 
 ## <a name="task-3"></a>Task 3: React to membership changes
 
