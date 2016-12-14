@@ -111,8 +111,10 @@ TODO
 
 1. **Provide the docker log output for each of the containers:  `ha`, `s1` and `s2`.**  
  * We first start `ha` (log : [logs/task3/ha1.log](../logs/task3/ha1.log))
- * Then, we start one of the nodes (s1 in our case) (log : [logs/task3/s11.log](../logs/task3/s1.log))
+ * Then, we start one of the nodes (s1 in our case) (log : [logs/task3/s11.log](../logs/task3/s11.log))
  * Giving us to following log for `ha`: [logs/task3/ha12.log](../logs/task3/ha12.log)
+ 
+ *Remark* : On a donné que le log de s1, puisque c'était demandé de lancer qu'un. Mais on voit bien dans le log de ha après s1 starté qu'il a recu l'event EventMemberJoin 
 
 2. **Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container.**  
  * serf log : [logs/task3/serf.log](../logs/task3/serf.log)
@@ -139,9 +141,9 @@ TODO : To mitigate that, we could
 TODO 
 
 3. **Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected. In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.**  
-   * haproxy.cfg after starting ha : [logs/task4/haproxy_1.log](../logs/task4/haproxy_1.log)
-   * haproxy.cfg after starting s1 : [logs/task4/haproxy_2.log](../logs/task4/haproxy_2.log)
-   * haproxy.cfg after starting s2 : [logs/task4/haproxy_3.log](../logs/task4/haproxy_3.log)
+   * haproxy.cfg after starting ha : [logs/task4/haproxy_1.cfg](../logs/task4/haproxy_1.cfg)
+   * haproxy.cfg after starting s1 : [logs/task4/haproxy_2.cfg](../logs/task4/haproxy_2.cfg)
+   * haproxy.cfg after starting s2 : [logs/task4/haproxy_3.cfg](../logs/task4/haproxy_3.cfg)
    * Output of `docker ps` : [logs/task4/docker_ps.log](../logs/task4/docker_ps.log)
    * Output of `docker inspect ha` : [logs/task4/inspect_ha.log](../logs/task4/inspect_ha.log)
    * Output of `docker inspect s1` : [logs/task4/inspect_s1.log](../logs/task4/inspect_s1.log)
@@ -149,7 +151,7 @@ TODO
     
 4. **Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?**  
 
-TODO
+On a du les taper manuellement, c'est pas automatisé.
    
 ## <a name="task-5"></a>Task 5: Generate a new load balancer configuration when membership changes
 
