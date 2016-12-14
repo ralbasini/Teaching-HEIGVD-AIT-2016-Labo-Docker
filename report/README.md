@@ -30,64 +30,60 @@ In order to do so, we will perform several tasks which details are explained in 
 **Issues :**
 
 1. **[M1] Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?**  
-
-Non, la solution n'est pas scalable, si le trafic augmente on ne peut pas facilement ajouter des nodes. Si on veut ajouter un noeud, on doit modifier la configuration, et donc stopper le fonctionnement du truc pendant la mise à jour (vu que c'est du docker)
-
+ No, the current solution is not scalable. If the trafic increases, we can't easily add or delete nodes. To do so, we must edit the configuration manually, and then restart the containers, implying the application to be offline during this time (as Docker is used)  
+  
 2. **[M2] Describe what you need to do to add new webapp container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.**  
-
-1) on modifie haproxy en ajoutant le node
-server s3 <s3>:3000 check
-2) On modifie le script run.sh
-sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg
-3) On rebuild ha
-docker build -t softengheigvd/ha .
-4) On run ha
-docker run -d -p 80:80 -p 1936:1936 -p 9999:9999 --link s1 --link s2 --link s3 --name ha softengheigvd/ha  
-5) On run s3
-docker run -d --name s3 softengheigvd/webapp
+ 1) We edit `haproxy.cfg` to add the node  
+ `server s3 <s3>:3000 check`  
+ 2) We edit the `run.sh` script.  
+ `sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg`  
+ 3) We rebuild `ha`  
+ `docker build -t softengheigvd/ha .`  
+ 4) We run `ha`  
+ `docker run -d -p 80:80 -p 1936:1936 -p 9999:9999 --link s1 --link s2 --link s3 --name ha softengheigvd/ha`  
+ 5) We run `s3`  
+ `docker run -d --name s3 softengheigvd/webapp`  
+<br />
 
 3. **[M3] Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.**  
-
-C'est pas dynamique. On veut que le haproxy.cfg soit modifié à l'ajout/suppression d'un node automatiquement, en temps réel, sans avoir à effectuer d'opérations manuelles.  
+ As explained, this isn't dynamic in any way. Every modification must be implemented manually. We would like `haproxy.cfg` to by edited automatically when a node is added/deleted. This approach would be much easier and scalable, and wouldn't require human intervention.  
+<br />
 
 4. **[M4] You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic fashion?**  
-
-Il faut trouver un outil pour automatiser ces tâches. Nous verrons dans le labo que l'utilisation d'un agent serf permettra de réaliser cela. Plus besoin de hardcoder la config du load balancer, mise à jour automatique à l'ajout/suppression d'un node.
+ We need to find a took to update automatically the list of nodes. We will see during the lab that using the `serf`agent will let us add those nodes dynamically. This way, a manual update impyling hardcoding the config of the load balancer won't be required anymore. Every addition/removal of a node will be updated automaticaly.  
+<br />
 
 5. **[M5] In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks. For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task. Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?**   
+ Docker was designed to support only one process per Docker image. The image can't output its logs elsewhere in the initial configuration. We will see during the lab that using `s6` will let us having more than one process running simultaneously in a docker image.  
+<br />   
 
-Docker concu pour avoir qu'un process par image docker. L'image ne peut dont normalement pas balancer ses logs ailleurs. On verra dans le labo qu'utiliser s6 nous permettra de contourner cet aspect, en permettant d'avoir plusieurs procoessus simultanément   
-
-6. **[M6] In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the run.sh script, we see two calls to sed which will replace two lines in the haproxy.cfg configuration file just before we start haproxy. You clearly see that the configuration file has two lines and the script will replace these two lines. What happens if we add more web server nodes? Do you think it is really dynamic? It's far away from being a dynamic configuration. Can you propose a solution to solve this?**  
-
-Les commandes sed sont hardcodées, il faut donc en ajouter manuellement à chaque ajout d'un node.  
+6. **[M6] In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the run.sh script, we see two calls to sed which will replace two lines in the haproxy.cfg configuration file just before we start haproxy. You clearly see that the configuration file has two lines and the script will replace these two lines. What happens if we add more web server nodes? Do you think it is really dynamic? Can you propose a solution to solve this?**  
+ As the `sed` commands are hardcoded, every addition of a node require the `sed` command to be manually implemented. We can't describe the current implementation as dynamic.
+<br />
 
 **Deliverables**:
 
 1. **Take a screenshot of the stats page of HAProxy at <http://192.168.42.42:1936>. You should see your backend nodes.**   
-
-As expected, we can see both of our backend nodes running : 
-![Architecture](../logs/task0/task0_1.PNG)
+ As expected, we can see both of our backend nodes running :  
+ ![Architecture](../logs/task0/task0_1.PNG)
 
 2. **Give the URL of your repository URL in the lab report.**  
-
-https://github.com/dardanSelimi/Teaching-HEIGVD-AIT-2016-Labo-Docker/tree/master/report
+ https://github.com/dardanSelimi/Teaching-HEIGVD-AIT-2016-Labo-Docker/tree/master/report
 
 ## <a name="task-1"></a>Task 1: Add a process supervisor to run several processes
 
 **Deliverables**:
 
 1. **Take a screenshot of the stats page of HAProxy at <http://192.168.42.42:1936>. You should see your backend nodes. It should be really similar to the screenshot of the previous task.**  
-
-Indeed, the HAProxy's stats page is similar to the one seen in Task 0 : 
-![Architecture](../logs/task1/1.1.PNG)
+ Indeed, the HAProxy's stats page is similar to the one seen in Task 0 :  
+ ![Architecture](../logs/task1/1.1.PNG)
 
 2. **Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.**  
-
-Comem expliqué dans la question MX, pas plusieurs process par image docker. On veut pouvoir ajouter/supprimer dynamiqeuemnt des nodes, raison pour laquelle on a tuilisé s6
+ As explained in the question M5, we can't have more that one running process per container. Installing a process supervisor will allow us to bypass this limitation. In our case, `ha` and the `serf` agent will run on the same docker image. To do so, we will use `s6`. It is a small init system that will coordinate the boot process and will allow to run multiple processes inside one container.  
+ To implement the process supervisor, we edited our `Dockerfile` to download and install `S6`. Then, we configured `S6` to be the main process of our containers by editing the `ENTRYPOINT` of `ha` and `webapp`'s respective `Dockerfile`.  
+ We didn't encounter much difficulties, the instructions were very well documented. 
    
 ## <a name="task-2"></a>Task 2: Add a tool to manage membership in the web server cluster
-
 
 **Deliverables**:
 
@@ -198,7 +194,14 @@ On a du les taper manuellement, c'est pas automatisé.
  `docker ps` output : [logs/task6/6.4ps.log](../logs/task6/6.4_ps.log)
    
 2. **Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.**
+
+ Quand on add/delete un node, le système se fige pendant quelques secondes. On a donc un intervalle de temps durant lequel notre configuration n'est plus atteignable.  
    
 ## <a name="difficulties"></a>Difficulties
 
+Nous n'avons pas rencontré de difficultés particulières, le laboratoire étant très bien documenté et les explications fournies très claires.
+Nous avons déja travaillé avec docker et donc connaissons la plupart des commandes utilisées. 
+Comprendre le fonctionnement des scripts a peut être été la partie nous ayant posé le plus de problèmes, n'ayant pas une grand expérience dans le fonctionnement de certaines commandes. 
+
 ## <a name="conclusion"></a>Conclusion
+Ce laboratoire a été intéressant à faire, nous a beaucoup appris sur docker et sur le foncitonnement des clusters dans une application web. C'est assez de sucage de teub, je continue encore un moment ou c'est bon ?
