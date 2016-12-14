@@ -31,27 +31,36 @@ In order to do so, we will perform several tasks which details are explained in 
 
 1. **[M1] Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?**  
 
-TODO  
+Non, la solution n'est pas scalable, si le trafic augmente on ne peut pas facilement ajouter des nodes. Si on veut ajouter un noeud, on doit modifier la configuration, et donc stopper le fonctionnement du truc pendant la mise à jour (vu que c'est du docker)
 
 2. **[M2] Describe what you need to do to add new webapp container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.**  
 
-TODO  
+1) on modifie haproxy en ajoutant le node
+server s3 <s3>:3000 check
+2) On modifie le script run.sh
+sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg
+3) On rebuild ha
+docker build -t softengheigvd/ha .
+4) On run ha
+docker run -d -p 80:80 -p 1936:1936 -p 9999:9999 --link s1 --link s2 --link s3 --name ha softengheigvd/ha  
+5) On run s3
+docker run -d --name s3 softengheigvd/webapp
 
 3. **[M3] Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.**  
 
-TODO  
+C'est pas dynamique. On veut que le haproxy.cfg soit modifié à l'ajout/suppression d'un node automatiquement, en temps réel, sans avoir à effectuer d'opérations manuelles.  
 
 4. **[M4] You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic fashion?**  
 
-TODO  
+Il faut trouver un outil pour automatiser ces tâches. Nous verrons dans le labo que l'utilisation d'un agent serf permettra de réaliser cela. Plus besoin de hardcoder la config du load balancer, mise à jour automatique à l'ajout/suppression d'un node.
 
-5. **[M5] In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks. For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task. Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?**  
+5. **[M5] In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks. For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task. Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?**   
 
-TODO  
+Docker concu pour avoir qu'un process par image docker. L'image ne peut dont normalement pas balancer ses logs ailleurs. On verra dans le labo qu'utiliser s6 nous permettra de contourner cet aspect, en permettant d'avoir plusieurs procoessus simultanément   
 
 6. **[M6] In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the run.sh script, we see two calls to sed which will replace two lines in the haproxy.cfg configuration file just before we start haproxy. You clearly see that the configuration file has two lines and the script will replace these two lines. What happens if we add more web server nodes? Do you think it is really dynamic? It's far away from being a dynamic configuration. Can you propose a solution to solve this?**  
 
-TODO 
+Les commandes sed sont hardcodées, il faut donc en ajouter manuellement à chaque ajout d'un node.  
 
 **Deliverables**:
 
@@ -62,7 +71,7 @@ As expected, we can see both of our backend nodes running :
 
 2. **Give the URL of your repository URL in the lab report.**  
 
-TODO
+https://github.com/dardanSelimi/Teaching-HEIGVD-AIT-2016-Labo-Docker/tree/master/report
 
 ## <a name="task-1"></a>Task 1: Add a process supervisor to run several processes
 
@@ -75,7 +84,7 @@ Indeed, the HAProxy's stats page is similar to the one seen in Task 0 :
 
 2. **Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.**  
 
-TODO
+Comem expliqué dans la question MX, pas plusieurs process par image docker. On veut pouvoir ajouter/supprimer dynamiqeuemnt des nodes, raison pour laquelle on a tuilisé s6
    
 ## <a name="task-2"></a>Task 2: Add a tool to manage membership in the web server cluster
 
@@ -89,7 +98,8 @@ TODO
 
 2. **Give the answer to the question about the existing problem with the current solution.**  
 
-TODO
+Problème est qu'on doit starter ha d'abord pour que les nodes puissent y être reliés. 
+Une solution peut être d'utiliser l'option `-retry-join` et de donner l'adresse de ha pour que l'agent puisse joindre ha. Voir le [lien](https://www.consul.io/docs/agent/options.html) pour plus de détails sur ta soeur
 
 3. **Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.**  
 
@@ -100,12 +110,12 @@ TODO
 **Deliverables**:
 
 1. **Provide the docker log output for each of the containers:  `ha`, `s1` and `s2`.**  
-* We first start `ha` (log : [logs/task3/ha1.log](../logs/task3/ha1.log))
-* Then, we start one of the nodes (s1 in our case) (log : [logs/task3/s11.log](../logs/task3/s1.log))
-* Giving us to following log for `ha`: [logs/task3/ha12.log](../logs/task3/ha12.log)
+ * We first start `ha` (log : [logs/task3/ha1.log](../logs/task3/ha1.log))
+ * Then, we start one of the nodes (s1 in our case) (log : [logs/task3/s11.log](../logs/task3/s1.log))
+ * Giving us to following log for `ha`: [logs/task3/ha12.log](../logs/task3/ha12.log)
 
 2. **Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container.**  
-* serf log : [logs/task3/serf.log](../logs/task3/serf.log)
+ * serf log : [logs/task3/serf.log](../logs/task3/serf.log)
 
 ## <a name="task-4"></a>Task 4: Use a template engine to easily generate configuration files
 
