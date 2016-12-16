@@ -1,4 +1,4 @@
-#AIT - Labo 04 - Virtualization
+#AIT - Labo 04 - Docker
 ## ALBASINI Romain, SELIMI Dardan
 
 ##Introduction
@@ -58,7 +58,8 @@ In order to do so, we will perform several tasks which details are explained in 
 <br />   
 
 6. **[M6] In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the run.sh script, we see two calls to sed which will replace two lines in the haproxy.cfg configuration file just before we start haproxy. You clearly see that the configuration file has two lines and the script will replace these two lines. What happens if we add more web server nodes? Do you think it is really dynamic? Can you propose a solution to solve this?**  
- As the `sed` commands are hardcoded, every addition of a node require the `sed` command to be manually implemented. We can't describe the current implementation as dynamic.
+ As the `sed` commands are hardcoded, every addition of a node require the `sed` command to be manually implemented. We can't describe the current implementation as dynamic.  
+ We will see in the lab that using Handlebars and template will help us solving this issue, by reconstructing the configuration file every time a node is added/removed.
 <br />
 
 **Deliverables**:
