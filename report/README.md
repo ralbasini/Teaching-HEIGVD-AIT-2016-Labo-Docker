@@ -110,7 +110,7 @@ Une solution peut être d'utiliser l'option `-retry-join` et de donner l'adresse
  * Then, we start one of the nodes (s1 in our case) (log : [logs/task3/s11.log](../logs/task3/s11.log))
  * Giving us to following log for `ha`: [logs/task3/ha12.log](../logs/task3/ha12.log)
  
- *Remark* : On a donné que le log de s1, puisque c'était demandé de lancer qu'un. Mais on voit bien dans le log de ha après s1 starté qu'il a recu l'event EventMemberJoin 
+ *Remark* : We only capture the log from `s1` as the instructions were to start only one of the nodes. We can see in `ha`'s log that `s1` started successfully as it received the `EventMemberJoin` event.  
 
 2. **Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container.**  
  * serf log : [logs/task3/serf.log](../logs/task3/serf.log)
@@ -119,22 +119,34 @@ Une solution peut être d'utiliser l'option `-retry-join` et de donner l'adresse
 
 **Deliverables**:
 
-1. **You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that?**  
+1. **You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that? Tell us about the pros and cons to merge as much as possible of the command.**  
 
-TODO : To mitigate that, we could
+    Editing the Dockerfile implies a complete rebuild of the container to take changes into account. A docker image is composed of read-only layers that represent the filesystem differences. When editing the `Dockerfile`, a new small layer is added for every `RUN` instruction written. Adding a lot of layers will take time and makes the deployment heavier. It is a good practice to try to merge the `RUN` instructions to mitigate that. It is preferable to write  
+    `RUN command 1 && command 2 && command 3`  
+    than  
+	  ```
+	  RUN command 1
+	  RUN command 2
+	  RUN command 3
+	```  
+	Docker itself recommands to merge the commands as much as possible ([link](https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#run))  
+	When building a new image, Docker looks for changes by comparing it to its cached version. Splitting `apt-get` and `apt-update` in two `RUN` instructions will result in the second instruction not being executed, as according to Docker, no changes were detected (see link above and [this](http://thenewstack.io/understanding-the-docker-cache-for-faster-builds/) for further details).  
 
- **Tell us about the pros and cons to merge as much as possible of the command.**  
+	<br />
+	The problem with this system is the disk usage due to the cache storage. Big docker images will then need a consequent amount of cache storage. 
+	
 
- * Pros : 
- * Cons : 
 
- **There are also some articles about techniques to reduce the image size. Try to find them. They are talking about `squashing` or `flattening` images.**
+    **There are also some articles about techniques to reduce the image size. Try to find them. They are talking about `squashing` or `flattening` images.**
 
- TODO 
+	 Here are some interesting links : 
+	* [squashing](http://jasonwilder.com/blog/2014/08/19/squashing-docker-images/)  
+	* [flattening](http://tuhrig.de/flatten-a-docker-container-or-image/)   
+<br />
 
 2. **Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.**  
 
-TODO 
+	As explained above, our `Dockerfile`  `RUN` instructions should be as merged as possible to mitigate the number of layers used.  
 
 3. **Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected. In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.**  
    * haproxy.cfg after starting ha : [logs/task4/haproxy_1.cfg](../logs/task4/haproxy_1.cfg)
@@ -147,7 +159,7 @@ TODO
     
 4. **Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?**  
 
-On a du les taper manuellement, c'est pas automatisé.
+    The outputs have been generated manually. We could have a system to automatize that.  
    
 ## <a name="task-5"></a>Task 5: Generate a new load balancer configuration when membership changes
 
@@ -195,13 +207,21 @@ On a du les taper manuellement, c'est pas automatisé.
    
 2. **Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.**
 
- Quand on add/delete un node, le système se fige pendant quelques secondes. On a donc un intervalle de temps durant lequel notre configuration n'est plus atteignable.  
+	When we add/delete a node, the system freezes during a few seconds. There is a timelapse in which our application can't be reached. The system's availability might not be sufficient for some highly-available applications (high availability systems).  
+	Yelp has been able to reach a system close to zero downtime in their system. They use fast reload that uses `SO_REUSEPORT` to bind to the same ports that the old HAProxy is listening to and sends a signal to the old HAProxy instance to shut down.  
+	The maintainer of `HAProxy` suggested to drop SYN packets for the duration of the reload.  
+	
+	**Reference links**
+	* [Yelp - Zero downtime](https://engineeringblog.yelp.com/2015/04/true-zero-downtime-haproxy-reloads.html)  
+	* [marc.info - Drop SYN packets](http://marc.info/?l=haproxy&m=133262017329084&w=2) 
+
+  
    
 ## <a name="difficulties"></a>Difficulties
 
-Nous n'avons pas rencontré de difficultés particulières, le laboratoire étant très bien documenté et les explications fournies très claires.
-Nous avons déja travaillé avec docker et donc connaissons la plupart des commandes utilisées. 
-Comprendre le fonctionnement des scripts a peut être été la partie nous ayant posé le plus de problèmes, n'ayant pas une grand expérience dans le fonctionnement de certaines commandes. 
+We didn't encounter specific difficulties. The lab was very well-explained, and the given explainations and links given were very useful.  
+We already had some experience working with Docker, so we were quite familiar with most of the commands. Understanding the deep functionning of the different scripts was perhaps the most tricky part. But again, the good documentation given helped us a lot. 
 
 ## <a name="conclusion"></a>Conclusion
-Ce laboratoire a été intéressant à faire, nous a beaucoup appris sur docker et sur le foncitonnement des clusters dans une application web. C'est assez de sucage de teub, je continue encore un moment ou c'est bon ?
+This lab was very interesing, and we learned a lot about Docker and HAProxy. Reflecting on dynamic implementation of the proxy was fun to do.  
+We realize the importance of Docker in a professional environment, and being familiar with it is only an upside for our future career !
