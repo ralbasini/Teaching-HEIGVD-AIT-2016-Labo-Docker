@@ -198,7 +198,7 @@ Une solution peut être d'utiliser l'option `-retry-join` et de donner l'adresse
 
  * We now ran a third node `s3`. HAProxy's stat page now shows the 3 applications running : 
  ![Architecture](../logs/task6/6.3_port.PNG)
- `docker ps` output : [logs/task6/6.3_ps.log](../logs/task6/6.3_ps.log)
+ 
 
  * Finally, we stopped `s1`. HAProxy's stat page then shows s1 as stopped : 
  ![Architecture](../logs/task6/6.4_port.PNG)
