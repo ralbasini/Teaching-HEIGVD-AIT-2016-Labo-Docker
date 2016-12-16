@@ -179,9 +179,9 @@ Une solution peut être d'utiliser l'option `-retry-join` et de donner l'adresse
    * List of files from `/nodes`: [logs/task5/ls_nodes.log](../logs/task5/ls_nodes.log)
 
 3. **Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected. In addition, provide a log file containing the output of the `docker ps` console. One file expected.**  
-   * haproxy.cfg after stopping s1 : [logs/task5/haproxy_4.cfg](../logs/task5/haproxy_2.cfg)
-   * List of files from `/nodes`: [logs/task5/ls_nodes2.log](../logs/task5/ls_nodes2.log)
-   * Output of `docker ps`: [logs/task5/docker_ps2.log](../logs/task5/docker_ps2.log)
+   * haproxy.cfg after stopping s1 : [logs/task5/haproxy_4.cfg](../logs/task5/haproxy_4.cfg)
+   * List of files from `/nodes`: [logs/task5/ls_nodes_2.log](../logs/task5/ls_nodes_2.log)
+   * Output of `docker ps`: [logs/task5/docker_ps_2.log](../logs/task5/docker_ps_2.log)
    
 ## <a name="task-6"></a>Task 6: Make the load balancer automatically reload the new configuration
 
