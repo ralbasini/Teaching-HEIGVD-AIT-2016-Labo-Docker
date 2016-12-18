@@ -69,7 +69,7 @@ In order to do so, we will perform several tasks which details are explained in 
  ![Architecture](../logs/task0/task0_1.PNG)
 
 2. **Give the URL of your repository URL in the lab report.**  
- https://github.com/dardanSelimi/Teaching-HEIGVD-AIT-2016-Labo-Docker/tree/master/report
+ https://github.com/ralbasini/Teaching-HEIGVD-AIT-2016-Labo-Docker/tree/master/report
 
 ## <a name="task-1"></a>Task 1: Add a process supervisor to run several processes
 
